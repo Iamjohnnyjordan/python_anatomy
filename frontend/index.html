@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Python Anatomy</title><link rel="stylesheet" href="/styles.css?v=0.5.4"><script src="/app.js?v=0.5.4" defer></script></head>
+<body>
+<header><div class="brand"><span class="logo">Py</span> Python Anatomy</div><span class="version">V0.5 · Connected program</span></header>
+<main>
+<section class="editor"><div class="section-label">01 / SOURCE</div><h1>Look inside your code.</h1><p>Start with the whole store. Explore a function, loop, or value, then return to see how it fits.</p>
+<label for="example">Try an example</label><select id="example"><option value="store">Mini store · whole program</option><option value="products">Products · list of text</option><option value="integer">Quantity · whole number</option><option value="float">Price · decimal number</option><option value="boolean">In stock · True or False</option><option value="none">Discount · no value yet</option><option value="tuple">Location · tuple</option><option value="dictionary">Prices · dictionary</option><option value="set">Categories · set</option><option value="nested">Product · collections inside collections</option></select><form id="form"><label for="source">Python source</label><textarea id="source" spellcheck="false" rows="4">import json
+from math import ceil as round_up
+
+# Data for our store: text, numbers, collections, and optional values.
+prices = {"Milk": 2.99, "Bread": 1.50, "Eggs": 3.25}
+categories = {"Dairy", "Bakery"}
+store_location = (2, 4)
+discount = None
+store_open = True
+
+# This for loop runs directly in the program, without a def.
+for product in prices:
+    print(product, prices[product])
+
+requests = ["Milk", "", "Bread", "Soap", "CHECKOUT", "Eggs"]
+cart = []
+position = 0
+
+while store_open and position &lt; len(requests):
+    product = requests[position]
+    position += 1
+    if not product:
+        continue
+    if product == "CHECKOUT" or product == "QUIT":
+        break
+    if product not in prices:
+        continue
+    cart.append(product)
+
+
+def calculate_total(items, price_list):
+    total = 0.0
+    # This for loop is inside a function; both kinds remain in the program.
+    for product in items:
+        if product in price_list:
+            total = total + price_list[product]
+    return total
+
+
+def ask_customer(default_name="Guest"):
+    name = input("Your name: ")
+    if not name:
+        return default_name
+    return name
+
+
+class Receipt:
+    def __init__(self, items, total):
+        self.items = items
+        self.total = total
+
+    def show(self):
+        print("Items:", self.items)
+        print("Total:", self.total)
+
+    def save(self, filename="receipt.json"):
+        if not self.items:
+            raise ValueError("Cannot save an empty receipt")
+        payload = {"items": self.items, "total": self.total}
+        with open(filename, "w", encoding="utf-8") as file:
+            json.dump(payload, file)
+        with open(filename, "r", encoding="utf-8") as file:
+            saved_text = file.read()
+        return saved_text
+
+
+subtotal = calculate_total(cart, prices)
+if discount is not None:
+    subtotal = subtotal - discount
+elif subtotal > 0:
+    print("No discount applied")
+else:
+    print("Your cart is empty")
+
+rounded_total = round_up(subtotal)
+receipt = Receipt(cart, subtotal)
+receipt.show()
+print("Rounded up:", rounded_total)
+print("Store location:", store_location)
+print("Categories:", categories)
+
+# Analyzing this example does not execute it or create a file.
+try:
+    saved = receipt.save(filename="receipt.json")
+except (OSError, ValueError) as error:
+    print("Receipt could not be saved:", error)
+else:
+    print("Saved receipt:", saved)
+finally:
+    print("Checkout finished")
+</textarea><div class="actions"><span>Whole programs & focused examples</span><button id="analyze" type="submit">Analyze <span aria-hidden="true">↗</span></button></div></form><p id="status" role="status" aria-live="polite"></p></section>
+<div class="workspace"><section class="anatomy"><div class="section-label">02 / ANATOMY</div><div class="section-heading"><h2>Pull the code apart</h2><span>Click to inspect</span></div><section id="structure-panel"><h3>Jump to a major structure</h3><nav id="structure-links" aria-label="Classes, functions, loops, and resource blocks"></nav></section><details id="concept-panel"><summary>Find every kind of code in this program</summary><div id="concept-groups"></div></details><nav id="breadcrumbs" aria-label="Anatomy location"></nav><div class="explode-controls"><label for="explode">Explode <output id="amount">0%</output></label><input id="explode" type="range" min="0" max="100" value="0"><label class="comment-toggle"><input id="hide-comments" type="checkbox"> Hide comments</label><button type="button" id="reassemble">Reassemble</button></div><p class="stage-hint">Select a piece, then choose Explore inside. Double-click a piece to enter it directly.</p><div class="zoom-controls"><label for="zoom">View size</label><input id="zoom" type="range" min="50" max="150" value="100"><output id="zoom-label">100%</output></div><div id="viewport" tabindex="0" aria-label="Scrollable anatomy workspace"><div id="stage"><svg id="connections" aria-hidden="true"></svg><div id="pieces"></div></div></div><details><summary>Browse the component tree</summary><div id="tree" aria-label="Code anatomy"></div></details></section>
+<aside><div class="section-label">03 / Inspector (About this piece)</div><h2 id="detail-title">Assignment</h2><span id="kind" class="tag"></span><p id="explanation"></p><section id="overview-panel" hidden><h3>What this code does</h3><ol id="overview-steps"></ol></section><button type="button" id="explore" disabled>Explore inside ↗</button><h3>Connections across the program</h3><div id="related"></div><dl><dt>Connected as</dt><dd id="relationship"></dd><dt>Source position</dt><dd id="position"></dd></dl><h3>Exact source</h3><pre id="source-preview"></pre><p class="note">Highlighted text belongs to the selected component. Select quotes, commas, or brackets to inspect the syntax.</p></aside></div>
+</main><footer>Source analysis only · Your code is never executed</footer>
+</body></html>
